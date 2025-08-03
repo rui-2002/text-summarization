@@ -1,0 +1,12 @@
+transformers
+transformers[sentencepiece]
+datasets
+sacreblue # it is an evolution matrix
+rouge_score
+py7zr
+pandas
+nltk
+tqdm
+PyYAML
+matplotlib
+torch
