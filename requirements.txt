@@ -1,12 +1,22 @@
 transformers
 transformers[sentencepiece]
 datasets
-sacreblue # it is an evolution matrix
+sacrebleu # it is an evolution matrix
 rouge_score
 py7zr
 pandas
 nltk
-tqdm
+tqdm 
 PyYAML
 matplotlib
 torch
+notebook
+boto3
+mypy-boto3 
+python-box
+ensure
+fastapi
+uvicorn
+Jinja2
+-e .
+
