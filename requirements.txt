@@ -1,22 +1,20 @@
 transformers
 transformers[sentencepiece]
 datasets
-sacrebleu # it is an evolution matrix
+sacrebleu
 rouge_score
 py7zr
 pandas
 nltk
-tqdm 
+tqdm
 PyYAML
 matplotlib
-torch
 notebook
 boto3
-mypy-boto3 
-python-box
-ensure
-fastapi
-uvicorn
-Jinja2
+mypy-boto3==1.34.110
+python-box==7.1.1
+ensure==1.0.3
+fastapi==0.111.0
+uvicorn==0.29.0
+Jinja2==3.1.4
 -e .
-
