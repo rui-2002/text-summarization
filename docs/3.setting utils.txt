@@ -1,0 +1,46 @@
+# Before this we have setup up our logging file in src/logging
+
+
+
+
+# Setting up utilis (files that are commonly used /commonly used functions):
+1. Imported the modules
+2. read_yml method to read yml file and return its content;
+3. create_directories (method ) used to created directories eg for data ingestion,training or creating other folder.
+
+
+@ensure_annotations: (it is a decorator) :
+
+def get_product(x:int ,y:int) -> int: # -> int: this is return type of fn
+    return x * y
+get_product(x=2,y=5)
+get_product(x=2,y="4")
+from ensure import ensure_annotations
+@ensure_annotations
+def get_product(x:int ,y:int)->int:
+    return x*y
+get_product(x=2,y=5)
+get_product(x=2,y="5") # bymistake put string instead of int (normally it gives 55) so to stop this misclassification
+# we use @ensure_annotations
+
+
+# suppose our function/code run eventhough with a mistake (it can cause problem/wrong data output)
+therfore, this decorator gives error .
+
+
+
+# returning yml file as configbox output / configbox type:
+configbox help us to get values instead of list : we can use .
+eg : dictionay.key (normally it would give error) we have to pass it in configbox
+eg : ConfigBox(dictionay)  
+eg : dictionay.key : we can get values easily 
+
+
+from box import ConfigBox
+d={"key":"value","key1":"value1"}
+d['key']
+#instead of list i want to acces it like this 
+d.key
+# this gives us error but if we want to access like that we use configbox
+d=ConfigBox(d)
+d.key1
