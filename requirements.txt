@@ -10,6 +10,7 @@ tqdm
 PyYAML
 matplotlib
 #torch
+box
 notebook
 boto3
 mypy-boto3
