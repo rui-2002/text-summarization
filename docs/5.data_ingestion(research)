@@ -1,0 +1,24 @@
+# In research/data_ingestion :
+
+%pwd : project working directory
+---> current directory we are  working on.
+
+# To Access the element outside the directory we have to go back
+os.chdir("../") : chdir -->change directory
+"../" : gone back 1 folder
+
+
+
+
+2. Update config.yaml
+ 
+ artifacts_root :artifcats 
+ 
+ i.e defining our artifcats that will create an artifact folder and the folder will be storing our data(from components,other folders.).
+
+
+
+
+ 3. Creating data related configuration
+ If we want to use some path/url and need to use we can store in config.yaml file and from here we can read it 
+ 
