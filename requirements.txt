@@ -13,6 +13,8 @@ matplotlib
 box
 notebook
 boto3
+kaggle
+kagglehub
 mypy-boto3
 python-box
 ensure
