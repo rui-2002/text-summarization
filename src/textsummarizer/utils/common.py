@@ -1,14 +1,14 @@
 import os
-from box.exceptions import BoxValueError
 import yaml
-from textsummarizer.logging import logger
-from ensure import ensure_annotation
+from box.exceptions import BoxValueError
 from box import ConfigBox
+from ensure import ensure_annotations
+from textsummarizer.logging import logger
 from pathlib import Path
 from typing import Any
 
 
-@ensure_annotation
+@ensure_annotations
 def read_yml(path_to_yaml: Path)-> ConfigBox:
     """
     Reads a YAML file and returns its contents as a ConfigBox.
@@ -36,7 +36,7 @@ def read_yml(path_to_yaml: Path)-> ConfigBox:
         raise e
     
 
-@ensure_annotation
+@ensure_annotations
 
 def create_directories(path_to_directories: list,verbose=True):
     """
@@ -55,7 +55,7 @@ def create_directories(path_to_directories: list,verbose=True):
 
 
 
-@ensure_annotation
+@ensure_annotations
 def get_size(path: Path)-> str:
     """
     get size in KB
