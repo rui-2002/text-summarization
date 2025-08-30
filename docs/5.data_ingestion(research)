@@ -22,3 +22,34 @@ os.chdir("../") : chdir -->change directory
  3. Creating data related configuration
  If we want to use some path/url and need to use we can store in config.yaml file and from here we can read it 
  
+ if we want to change the directory path / add folder we can simply do it from changing the yaml file .
+ it will reflect the change in whole code.
+
+ 4. Update params.yaml : but in this case we don't have any  paramas
+ therfore we require whenever we want model trainer configuration.
+
+ 5. Update Entity : Entity is the return type of a function.
+ For this we use dataclasses, 
+
+ # define dataclass and inside that give parameter (frozen=True) and inside dacorator define class DataIngestion
+@dataclass(frozen=True) # inside data class we can mention our varibles , and what is the type of varible
+class DataIngestionConfig:
+    root_dir: Path # variable : type of varibale is Path
+    source_URL: str
+    local_data_file:Path
+    unzip_dir:Path
+
+if we call anyone this they will return their path.
+
+
+6. Update the config mananger in src : but we are not doing it in src we are doing in notebook experiment so writing code there only.
+
+Importing all the constants , creating constant : int components/constanst we define our constants
+
+What are our constants ?
+
+Constant are : here we only want to return config.yaml and params.ml because we want to read it. To read config.yaml file we need the path 
+as the path inside yaml file won't be changing and hence it is constant so to use again and again.
+
+Inside constructor file of src/constans : we will read the file and return all the content inside it .
+

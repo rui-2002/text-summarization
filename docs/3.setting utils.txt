@@ -8,7 +8,7 @@
 2. read_yml method to read yml file and return its content;
 3. create_directories (method ) used to created directories eg for data ingestion,training or creating other folder.
 
-
+ 
 @ensure_annotations: (it is a decorator) :
 
 def get_product(x:int ,y:int) -> int: # -> int: this is return type of fn
@@ -21,6 +21,8 @@ def get_product(x:int ,y:int)->int:
     return x*y
 get_product(x=2,y=5)
 get_product(x=2,y="5") # bymistake put string instead of int (normally it gives 55) so to stop this misclassification
+
+
 # we use @ensure_annotations
 
 

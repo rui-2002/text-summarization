@@ -10,7 +10,7 @@ tqdm
 PyYAML
 matplotlib
 #torch
-box
+python-box
 notebook
 boto3
 kaggle
