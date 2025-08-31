@@ -1,3 +1,1 @@
-from textsummarizer.logging import logger # txtsummarizer is our local package and can be called without help of src
-
-logger.info("Welcome to our custom logger")
+from textsummarizer.pipeline.stage_01_data_ingestion import 

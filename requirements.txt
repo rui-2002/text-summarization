@@ -2,6 +2,7 @@ transformers
 transformers[sentencepiece]
 datasets
 sacrebleu
+pyyaml
 rouge_score
 py7zr
 pandas
@@ -9,7 +10,7 @@ nltk
 tqdm
 PyYAML
 matplotlib
-#torch
+torch
 python-box
 notebook
 boto3
