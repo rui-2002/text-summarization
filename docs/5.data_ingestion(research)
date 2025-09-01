@@ -53,3 +53,120 @@ as the path inside yaml file won't be changing and hence it is constant so to us
 
 Inside constructor file of src/constans : we will read the file and return all the content inside it .
 
+
+
+## Creating class ConfigurationManager:
+defining a constuctor inside the consturctor:
+    it has class variable : config_file path from the constanst
+
+    Passing the file in read_yml(config_filepath) module : this will read the yaml file and we can access all the variable inside them.
+     # while executing the code it will show error as it is empty and we can provide values inside it later on.
+     # for running for a while just adding key value pairs.
+
+
+## creating folder artifacts_root using create_directories
+        create_directories(self.config.artifacts_root) : in form of box(using python box/config box )
+
+
+## creating a method (get_data_ingestion_config) and as it return type as DataIngestionConfig(it prepare above it the code)
+##  root_dir=config.root_dir,
+            source_URL=config.source_URL,
+            local_data_file=config.local_data_file,
+            unzip_dir=config.unzip_dir
+
+
+these are the variable it will return.
+# the convinence is that if we change config.yaml file it will show changes there. no need to change it again and again.
+
+# Hence our config manager is ready. 
+
+    
+def get_data_ingestion_config(self) ->DataIngestionConfig:
+        config=self.config.data_ingestion
+
+        create_directories(config.root_dir)
+
+        data_ingestion_config= DataIngestionConfig(
+            root_dir=config.root_dir,
+            source_URL=config.source_URL,
+            local_data_file=config.local_data_file,
+            unzip_dir=config.unzip_dir
+        )
+
+        return data_ingestion_config
+
+7. Create the components :
+# importing some of the libraries.
+
+Create a class DataIngestion components and initializing our config
+# defing 2 method : 1st download method form url : providing source url(location of data) and name of file i.e all coming from yaml file.
+# 2nd method : extract the downloaded zip file.
+
+
+
+8. Creating Pipeline :
+ 
+ # Creating a try catch block and:
+  initilize ConfigurationManager from it we take data_ingestion_config and store it 
+  call the data ingestion conponents and inside DataIngestion(it witll take data_ingestion config)
+  and then executing the 2 methods download and unzip data.
+
+
+
+# Convert this notebook into Modular coding : follow the workflow
+update config.yaml, paramas.yaml
+
+# update the entity. : copy the entity and paste it in entity folder(constructor)
+
+add the ConfigurationManager(src/config/ConfigurationManager)
+some files will be missing and adding/importing files from entity for DataIngestionConfig
+# from textsummarizer.entity import DataIngestionConfig
+
+
+
+# now adding components (created a file name data_ingestion and pasted the code)
+added path 
+from pathlib import Path
+
+
+# now create pipeline:
+created a file(stage_01_dataingestio.py)
+imported some files :
+from textsummarizer.config.configuration import ConfigurationManager
+from textsummarizer.components.data_ingestion import DataIngestion
+from textsummarizer.logging import logger
+
+created dataingestiontrainingpipeline :
+we dont need consturctor therfore we are passing it.
+
+create a method main : and copied the code of pipeline
+
+This code is ready but to execute it we have to write it in main.py also.
+
+: Remove previous code:
+
+Inside main.py :
+
+from textsummarizer.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
+from textsummarizer.logging import logger
+
+STAGE_NAME= "Data Ingestion Stage" # giving stage name(stage of data ingestion)
+
+try:
+    logger.info(f">>>>>>> stage {STAGE_NAME} started <<<<<<<")
+    data_ingestion=DataIngestionTrainingPipeline()
+    data_ingestion.main()
+    logger.info(f">>>>>>> stage {STAGE_NAME} completer <<<<<<<<<\n\nx===========x")
+except Exception as e:
+    logger.exception(e)
+    raise e
+
+giving stage name # (stage of data ingestion)
+# then it will log (data ingestion started)
+# then calling and initializing data_ingestion_pipeline
+# from this object calling main method (from data ingestion(src) : def main(self) : it is the main method)
+# logging dataingestion is completed.
+
+
+
+# Run main.py to check whether it is working or not.(try deleting artifacts folder)
