@@ -254,3 +254,23 @@ logs/
 # Ignore Python caches
 __pycache__/
 *.pyc
+
+# Ignore large files & artifacts
+artifacts/
+*.pt
+*.safetensors
+*.zip
+*.tar
+*.gz
+*.h5
+*.ckpt
+
+# Logs & cache
+logs/
+__pycache__/
+*.pyc
+*.pkl
+
+# Virtual environments
+.env/
+.venv/
