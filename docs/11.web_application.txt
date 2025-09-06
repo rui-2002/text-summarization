@@ -1,12 +1,19 @@
+# Update app.py:
+
+importing libraries:
+
 from fastapi import FastAPI
 import uvicorn
 import sys
 import os
 from fastapi.templating import Jinja2Templates
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectedResponse
 from fastapi.responses import Response
 from textsummarizer.pipeline.prediction import PredictionPipeline
 
+
+
+# Then we have to initalize our fastapi : This is the default route whenever we hit the route it will open (/docs) which will give fastapi UI.
 
 text:str ="What is Text Summarization?"
 
@@ -17,24 +24,23 @@ async def index():
     return RedirectedResponse(url="/docs")
 
 
-
+# then we will keep 2 route 1 for training,predict
 @app.get("/train")
 async def training():
     try:
         os.system("python main.py")
-        return Response("Training Successful !!")
+        return Response("Training Successful !!") # This will run main.py
     except Exception as e:
         return Response(f"Error Occurred! {e}")
-    
 
 @app.get("/predict")
 async def predict_route(text):
     try:
-        obj=PredictionPipeline()
-        text=obj.predict(text)
+        obj=PredictionPipeline() #initializing the class 
+        text=obj.predict(text) # from this obj calling predict method
         return text
     except Exception as e:
         raise e
-    
-if __name__=="__main__":
-    uvicorn.run(app,host="0.0.0.0",port=8080)
+
+
+# To run it we have to initialize the host

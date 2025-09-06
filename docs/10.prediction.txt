@@ -1,0 +1,40 @@
+# Model Prediction Pipeline:
+we require model_path, tokenizer_path to predict the result with help of prediction pipeline , we will be creating an API (fastapi)
+or user interface(UI) so that user will put one text and model will give us summarization.
+
+
+# we need some imports:
+
+from textsummarizer.config.configuration import ConfigurationManager
+from transformers import AutoTokenizer
+from transformers import pipeline
+
+
+# then we will define a class (predictionpiplenine):
+inside it we will get_model_evaluation_config() because in config.yaml we were returning model_path,tokenizer_path (these 2 things are needed to load out tokenizer,model)
+from this we can access our model ,tokenizer.
+
+
+# Define predict method in prediction pipeline:
+
+
+class PredictionPipeline:
+    def __init__(self):
+        self.config=ConfigurationManager().get_model_evaluation_config()
+
+
+    def predict(self,text):
+        tokenizer=AutoTokenizer.from_pretrained(self.config.tokenizer_path)
+        gen_kwargs= {"length_penalty":0.8,"num_beams":8,"max_length":128}
+
+        pipe=pipeline("summarization",model=self.config.model_path,tokenizer=tokenizer)
+
+        print("Dialogue:")
+        print(text)
+
+
+        output=pipe(text,**gen_kwargs)[0]["summary_text"]
+        print("\n Model Summary")
+        print(output)
+
+        return output
