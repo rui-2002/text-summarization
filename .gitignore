@@ -242,7 +242,7 @@ __pycache__/
 artifacts/
 *.pt
 *.safetensors
-*.zip
+
 *.tar
 *.gz
 *.h5
@@ -259,7 +259,7 @@ __pycache__/
 artifacts/
 *.pt
 *.safetensors
-*.zip
+
 *.tar
 *.gz
 *.h5
