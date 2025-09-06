@@ -1,21 +1,6 @@
-# Model Prediction Pipeline:
-we require model_path, tokenizer_path to predict the result with help of prediction pipeline , we will be creating an API (fastapi)
-or user interface(UI) so that user will put one text and model will give us summarization.
-
-
-# we need some imports:
-
 from textsummarizer.config.configuration import ConfigurationManager
 from transformers import AutoTokenizer
 from transformers import pipeline
-
-
-# then we will define a class (predictionpiplenine):
-inside it we will get_model_evaluation_config() because in config.yaml we were returning model_path,tokenizer_path (these 2 things are needed to load out tokenizer,model)
-from this we can access our model ,tokenizer.
-
-
-# Define predict method in prediction pipeline:
 
 
 class PredictionPipeline:
