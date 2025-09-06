@@ -1,0 +1,27 @@
+transformers>=4.40.0
+accelerate>=0.26.0
+torch>=2.0.0
+transformers[sentencepiece]
+datasets
+sacrebleu
+pyyaml
+rouge_score
+py7zr
+pandas
+nltk
+tqdm
+PyYAML
+matplotlib
+python-box
+notebook
+boto3
+kaggle
+kagglehub
+mypy-boto3
+python-box
+ensure
+fastapi
+evaluate
+uvicorn
+Jinja2
+-e .

@@ -1,0 +1,104 @@
+# Update the config.yaml file (for data validation)
+
+data_validation:
+  root_dir: artifacts/data_validation
+  STATUS_FILE: artifacts/data_validation/status.txt # return true/false if these files are present or not.(to check if files are present or not)
+  ALL_REQUIRED_FILES: ["train","test","validation"]
+
+
+
+
+
+# Inside research/data_validation.ipynb
+# Change the working directory.
+
+# Define the entity. it will return:
+    root_dir, status file, all req file.
+
+
+# import from textsummarizer.constants import *
+from textsummarizer.utils.common import read_yml,create_directories
+
+# Write our ConfigurationManager.
+
+    use same constructor and add data_validation_configuration.
+
+class ConfigurationManager:
+    def __init__(self,
+        config_filepath= CONFIG_FILE_PATH,
+        params_filepath=PARAMS_FILE_PATH):   # copied
+        
+        self.config=read_yml(config_filepath)
+        self.params=read_yml(params_filepath)
+
+        create_directories([self.config.artifacts_root])
+
+
+    def get_data_validation_config(self) -> DataValidationConfig:
+        config =self.config.data_validation
+
+        create_directories([config.root_dir])
+
+        data_validation_config=DataValidationConfig( # created
+            root_dir=config.root_dir,
+            STATUS_FILE=config.STATUS_FILE,
+            ALL_REQUIRED_FILES=config.ALL_REQUIRED_FILES,
+        )
+
+        return data_validation_config
+
+
+
+
+
+# write our components.
+
+# import some libraries os,logging
+
+# create class Datavalidation:
+class DataValidation:
+    def __init__(self,config: DataValidationConfig):
+        self.config =config    # it take DataValidationConfig and it is initialized.
+
+    # create a Method.(check for all 3 files are present or not .)
+    def validate_all_files_exist(self)-> bool:
+        try:
+            validation_status= None
+
+            all_files=os.listdir(os.path.join("artifacts","data_ingestion","samsum_dataset"))
+
+            for file in all_files:
+                if file not in self.config.ALL_REQUIRED_FILES:
+                    validation_status=False
+                    with open(self.config.STATUS_FILE,'w') as f:
+                        f.write(f"Validation status : {validation_status}")
+
+                else:
+                    validation_status=True
+                    with open(self.config.STATUS_FILE,'w') as f:
+                        f.write(f"Validation status: {validation_status}")
+
+            return validation_status
+        except Exception as e:
+            raise e
+   
+   
+   # we can also check datavalidation for datatype,coloum type
+
+
+
+# Writing our Pipeline.
+try:
+    config=ConfigurationManager()
+    data_validation_config=config.get_data_validation_config()
+    data_validation=DataValidation(config=data_validation_config)
+    data_validation.validate_all_files_exist()
+except Exception as e:
+    raise e
+
+
+
+# convert it into modular coding.
+# paste entity , ConfigurationManager, update the components (create data_validation file.)
+# create pipeline (stage_02_datavalidation.py)
+# update main.py

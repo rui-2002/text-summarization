@@ -1,0 +1,314 @@
+# Update the config.yaml file
+
+
+
+model_trainer:
+  root_dir : artifacts/model_trainer # create a new folder
+  data_path : artifacts/data_transformation/samsum_dataset
+  model_ckpt : google/pegasus-cnn_dailymail
+
+
+
+# Set the parameter : whenver we are training the model we have to set the parameters:
+ we can hardcode or put the parameter in params.yaml file :
+
+
+ # from params.yaml
+ TrainingArguments:
+  num_train_epochs: 1
+  warmup_steps: 500
+  per_device_train_batch_size: 1
+  weight_decay : 0.01
+  logging_steps: 10
+  evaluation_strategy: steps
+  eval_steps: 500
+  save_steps: 1e6
+  gradient_accumulation_steps: 16
+
+
+
+# prepare the entity 
+# all the values it will return :
+from dataclasses import dataclass
+from pathlib import Path
+
+@dataclass(frozen=True)
+class ModelTrainerConfig:
+    root_dir: Path
+    data_path : Path
+    model_ckpt: Path
+    num_train_epochs: int
+    warmup_steps: int
+    per_device_train_batch_size: int
+    weight_decay : int
+    logging_steps: int
+    evaluation_strategy: str
+    eval_steps: int
+    save_steps: int
+    gradient_accumulation_steps: int
+
+# Prepare configurationManager :
+befor that we have to import libarires
+from textsummarizer.constants import *
+from textsummarizer.utils.common import read_yml,create_directories
+
+
+# copy configurationManager as it is and add method model_trainer.config
+class ConfigurationManager:
+    def __init__(self,
+        config_filepath=CONFIG_FILE_PATH,
+        params_filepath=PARAMS_FILE_PATH):
+                                                # copied
+        self.config=read_yml(config_filepath)
+        self.params=read_yml(params_filepath)
+
+        create_directories([self.config.artifacts_root])
+    
+    def get_model_trainer_config(self)-> ModelTrainerConfig:
+        config = self.config.model_trainer
+        params= self.params.TrainingArguments
+
+        create_directories([config.root_dir])
+        
+        model_trainer_config = ModelTrainerConfig(
+            root_dir = config.root_dir,
+            data_path = config.data_path,
+            model_ckpt= config.model_ckpt,
+            num_train_epochs = params.num_train_epochs,
+            warmup_steps = params.warmup_steps,
+            per_device_train_batch_size = params.per_device_train_batch_size,
+            weight_decay = params.weight_decay,
+            logging_steps = params.logging_steps,
+            evaluation_strategy = params.evaluation_strategy,
+            eval_steps = params.eval_steps,
+            save_steps = params.save_steps,
+            gradient_accumulation_steps = params.gradient_accumulation_steps
+        )
+
+
+
+### Create components :
+before that import libarires
+
+from transformers import TrainingArguments, Trainer
+from transformers import DataCollatorForSeq2Seq
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from datasets import load_dataset, load_from_disk
+import torch
+
+
+# prepare model trainer class and model training method
+class ModelTrainer:
+
+    def __init__(self,config: ModelTrainerConfig):
+        self.config = config
+
+    def train(self):
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        tokenizer= AutoTokenizer.from_pretrained(self.config.model_ckpt)
+        model_pegasus=AutoModelForSeq2SeqLM.from_pretrained(self.config.model_ckpt).to(device)
+        seq2seq_data_collator= DataCollatorForSeq2Seq(tokenizer,model=model_pegasus)
+        #data collator : for batches
+
+        # loading data from this datapath
+        dataset_samsum_pt= load_from_disk(self.config.data_path)
+
+        # setting up training argument (reading from yaml file)
+        # trainer_args= TrainingArguments(
+        #     output_dir= self.config.root_dir,
+        #     num_train_epochs=self.config.num_train_epochs,
+        #     warmup_steps=self.config.warmup_steps,
+        #     per_device_train_batch_size=self.config.per_device_train_batch_size,
+        #     per_device_eval_batch_size=self.config.per_device_train_batch_size,
+        #     weight_decay=self.config.weight_decay,
+        #     logging_steps=self.config.logging_steps,
+        #     eval_strategy=self.config.evaluation_strategy,
+        #     eval_steps=self.config.eval_steps,
+        #     save_steps=1e6,
+        #     gradient_accumulation_steps=self.config.gradient_accumulation_steps
+        # )
+
+
+        # or read like hardcode way (direct approach)
+        trainer_args=TrainingArguments(
+            output_dir=self.config.root_dir,num_train_epochs=1,warmup_steps=500,
+            per_device_train_batch_size=1,per_device_eval_batch_size=1,
+            weight_decay=0.01,logging_steps=10,
+            eval_strategy='steps',eval_steps=500,save_steps=1e6,
+            gradient_accumulation_steps=16
+        )
+        # training code
+        trainer=Trainer(
+            model=model_pegasus,args=trainer_args,
+            tokenizer=tokenizer,data_collator=seq2seq_data_collator,
+            train_dataset=dataset_samsum_pt["test"],
+            eval_dataset=dataset_samsum_pt["validation"]
+        )
+
+        trainer.train()
+
+        ## after training save model (inside model trainer folder)
+        model_pegasus.save_pretrained(os.path.join(self.config.root_dir,"pegasus_samsum_model"))
+
+        ## save tokenizer
+        tokenizer.save_pretrained(os.path.join(self.config.root_dir,"tokenizer"))
+
+
+
+
+## To execute we need to create pipeline :
+initialize configmanagaer then call modeltrainerconfig and create obj from modeltrainerconfig then call our class model trainer and provide configuration.
+
+
+# if we encounter partialstate error/accelerate error:
+pip install --upgrade accelerate
+pip unistall -y transformers accelerate
+pip install transformers acclerate
+
+
+
+
+
+
+
+
+
+
+
+
+# Doing Modular coding :
+1. Updating Entity :
+@dataclass(frozen=True)
+class ModelTrainerConfig:
+    root_dir: Path
+    data_path : Path
+    model_ckpt: Path
+    num_train_epochs: int
+    warmup_steps: int
+    per_device_train_batch_size: int
+    weight_decay : int
+    logging_steps: int
+    evaluation_strategy: str
+    eval_steps: int
+    save_steps: int
+    gradient_accumulation_steps: int
+
+
+2. Update configuration manager
+def get_model_trainer_config(self)-> ModelTrainerConfig:
+        config = self.config.model_trainer
+        params= self.params.TrainingArguments
+
+        create_directories([config.root_dir])
+        
+        model_trainer_config = ModelTrainerConfig(
+            root_dir = config.root_dir,
+            data_path = config.data_path,
+            model_ckpt= config.model_ckpt,
+            num_train_epochs = params.num_train_epochs,
+            warmup_steps = params.warmup_steps,
+            per_device_train_batch_size = params.per_device_train_batch_size,
+            weight_decay = params.weight_decay,
+            logging_steps = params.logging_steps,
+            evaluation_strategy = params.evaluation_strategy,
+            eval_steps = params.eval_steps,
+            save_steps = params.save_steps,
+            gradient_accumulation_steps = params.gradient_accumulation_steps
+        )
+        return model_trainer_config
+
+3. Create components (create a new file modeltrainer) import libraries:
+and also importing class modeltrainer.
+from transformers import TrainingArguments, Trainer
+from transformers import DataCollatorForSeq2Seq
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+from datasets import load_dataset, load_from_disk
+from textsummarizer.entity import ModelTrainerConfig
+import torch
+
+
+
+class ModelTrainer:
+
+    def __init__(self,config: ModelTrainerConfig):
+        self.config = config
+
+    def train(self):
+        # device = "cuda" if torch.cuda.is_available() else "cpu"
+        device="cpu"
+        tokenizer= AutoTokenizer.from_pretrained(self.config.model_ckpt)
+        model_pegasus=AutoModelForSeq2SeqLM.from_pretrained(self.config.model_ckpt).to(device)
+        seq2seq_data_collator= DataCollatorForSeq2Seq(tokenizer,model=model_pegasus)
+
+
+        # loading data from this datapath
+        dataset_samsum_pt= load_from_disk(self.config.data_path)
+
+        # setting up training argument (reading from yaml file)
+        # trainer_args= TrainingArguments(
+        #     output_dir= self.config.root_dir,
+        #     num_train_epochs=self.config.num_train_epochs,
+        #     warmup_steps=self.config.warmup_steps,
+        #     per_device_train_batch_size=self.config.per_device_train_batch_size,
+        #     per_device_eval_batch_size=self.config.per_device_train_batch_size,
+        #     weight_decay=self.config.weight_decay,
+        #     logging_steps=self.config.logging_steps,
+        #     eval_strategy=self.config.evaluation_strategy,
+        #     eval_steps=self.config.eval_steps,
+        #     save_steps=1e6,
+        #     gradient_accumulation_steps=self.config.gradient_accumulation_steps
+        # )
+
+
+        # or read like hardcode way
+        trainer_args=TrainingArguments(
+            output_dir=self.config.root_dir,num_train_epochs=1,warmup_steps=500,
+            per_device_train_batch_size=1,per_device_eval_batch_size=1,
+            weight_decay=0.01,logging_steps=10,
+            eval_strategy='steps',eval_steps=500,save_steps=1e6,
+            gradient_accumulation_steps=16
+        )
+
+        trainer=Trainer(
+            model=model_pegasus,args=trainer_args,
+            tokenizer=tokenizer,data_collator=seq2seq_data_collator,
+            train_dataset=dataset_samsum_pt["test"],
+            eval_dataset=dataset_samsum_pt["validation"]
+        )
+
+        trainer.train()
+
+        ## save model
+        model_pegasus.save_pretrained(os.path.join(self.config.root_dir,"pegasus_samsum_model"))
+
+        ## save tokenizer
+        tokenizer.save_pretrained(os.path.join(self.config.root_dir,"tokenizer"))
+
+
+
+
+
+
+4. Create a Pipeline
+(create a new file stage 04 model trainer)
+from textsummarizer.config.configuration import ConfigurationManager
+from textsummarizer.components.model_trainer import ModelTrainer
+from textsummarizer.logging import logger
+
+class ModelTrainingPipeline:
+    def __init__(self):
+        pass
+
+    def main(self):
+        config = ConfigurationManager()
+        model_trainer_config= config.get_model_trainer_config()
+        model_trainer_config=ModelTrainer(config=model_trainer_config)
+        model_trainer_config.train()
+
+
+5. Update main.py
+from textsummarizer.pipeline.stage_04_model_trainer import ModelTrainingPipeline
+
+
+
+

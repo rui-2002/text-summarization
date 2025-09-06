@@ -1,0 +1,31 @@
+conda create -n env_name python=python_varsion -y
+conda activate env_name
+
+pip install -r requirements.txt
+
+
+1. writing setup.py (it initializes our readme file) : look for constructor in all the files and install it as local package for every folder.
+
+
+we can also publish this as a package in pypi
+In this we are providing
+
+: version, Repo name,author name etc.
+to install requiremets from here make sure you add -e . at last
+
+
+
+
+
+2. Setting up logging file
+
+# created dir/folder name docs and inside it create a file runnig_log.log file
+os.makedirs(log_dir,exist_ok=True) # it creates log directory and doesn't create again. if already there
+
+
+# creating our own custom logger.
+
+logging.FileHandler(log_filepath), # it will log inside logging txt file
+logging.StreamHandler(sys.stdout)  # it will show loggings in terminal
+
+

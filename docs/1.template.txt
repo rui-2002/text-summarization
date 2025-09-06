@@ -1,0 +1,102 @@
+1. Created template.py (project template creation)
+--->file structure
+---> What we have done :
+os :working with operating sys(creating folders)
+pathlib:modern, object-oriented alternative to os.path. It makes file and directory manipulations cleaner and more readable.
+logging : for recording events
+
+logging.basicConfig : configure log output
+
+list_of_file = creates file and folders required
+
+".github" : we use this whenever we are doing ci cd deployment .here we will write ci cd realted yml file
+# let say we want to commit our code in github whenever we do commit it automatically take code from github and do deployment in our cloud.
+
+
+".github/workflows/.gitkeep" :inside github we require another folder workflows
+ we added empty file (.gitkeep ) as we during commit empty folder is not uploaded in github (later we remove it)
+
+f"src/{project_folder_name}/__init__.py" : created a src folder and inside that created folder with project name inside that created a constructor (__init__.py)
+
+# constructor file is needed because we install this as our local package.To do things like importing local package from other folder we need this folder as other folders.
+# whenever we will be doing installation of our local package this will look for this constructor file.Wherever the constructor is located this folder will be considered as local package.
+
+
+ # wherever there will be our __init__file it will be our local package.
+
+ similarely doing for 
+f"src/{project_name}/components/__init__.py",
+f"src/{project_name}/utils/common.py",
+
+# Inside this common file i will be writing my utils.
+
+
+
+f"src/{project_name}/pipeline", this folder will contain our train and test pipeline
+
+"params.yaml" : consist of model realted parameters.
+
+"Docker" : build docker image of source code and do deployement of image
+"setup.py" : for local package setup
+"reasearch/traials":contain all the experiments on notebook
+
+
+if filedir!="" (file dir not empty) so i will create directory
+os.makedirs(filedir,exist_ok=True) # pass filedirectory ,exist_ok (if folder present already it won't create again)
+
+
+# After folder creation we also have to create file inside folder
+if(!os.path.exists(filepath) or (os.path.getsize(filepath)==0)) : we want file size because only create if size is 0.
+with open(file path )  : opening in writing mode , as we only want to create file so we do pass as we are not doing anything inside it.
+
+
+import os
+from pathlib import Path
+import logging
+
+logging.basicConfig(level=logging.INFO,format='[%(asctime)s]:%(message)s:')
+
+
+
+project_name="textsummarizer"
+
+list_of_files=[
+    ".github/workflows/.gitkeep", # used for ci cd deployment(writing ci cd related yml file)
+    f"src/{project_name}/__init__.py",
+    f"src/{project_name}/components/__init__.py",
+    f"src/{project_name}/utils/__init__.py",
+    f"src/{project_name}/components/common.py",
+    f"src/{project_name}/logging/__init__.py",
+    f"src/{project_name}/config/__init__.py",
+    f"src/{project_name}/config/configuration.py",
+    f"src/{project_name}/pipeline/__init__.py",
+    f"src/{project_name}/entity/__init__.py",
+    f"src/{project_name}/constants/__init__.py",
+    "config/config.yaml",
+    "params.yaml",
+    "app.py",
+    "main.py",
+    "Dockerfile",
+    "requirements.txt",
+    "setup.py"
+    "research/trails.ipynb",
+    
+
+]
+
+for filepath in list_of_files:
+    # convert path into specified os system
+    filepath=Path(filepath)
+    #split b/w file path and file name
+    filedir,filename=os.path.split(filepath)
+    if filedir!="":
+        os.makedirs(filedir,exist_ok=True)
+        logging.info(f"Creating directory:{filedir} for the file {filename}")
+
+    if(not os.path.exists(filepath) or (os.path.getsize(filepath)==0)):
+        with open(filepath,'w') as f:
+            pass
+        logging.info(f"Creating empty file:{filepath}")
+
+    else:
+        logging.info(f"{filename} is already exists.")

@@ -1,0 +1,15 @@
+## Downloading Dataset From Kaggle
+
+(from research file) :
+# download dataset using kaggle
+! kaggle datasets download nileshmalode1/samsum-dataset-text-summarization
+
+
+# Extracting the files
+
+import zipfile
+
+extract_to = os.path.join("samsum_dataset")
+
+with zipfile.ZipFile("samsum-dataset-text-summarization.zip","r") as zip_ref:
+    zip_ref.extractall(extract_to)
